@@ -23,7 +23,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var altitude: Double?
     @Published var latitude: Double?
     @Published var longitude: Double?
-    @Published var ellipsoidalAltitude:Double?
+    @Published var ellipsoidalAltitude: Double?
     
     @Published var course: Double?
     @Published var courseAccuracy:Double?
@@ -66,7 +66,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         withAnimation {
             let newItem = Item(context: viewContext!)
-            newItem.timestamp = Date()
+            newItem.timestamp = String.timestamp().tad2Date()
             newItem.timestampLocation = locationManager.location?.timestamp
             newItem.speed = speed ?? -1
             newItem.speedAccuracy = speedAccuracy ?? -1
@@ -99,5 +99,36 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         self.authorizationStatus = manager.authorizationStatus
+    }
+}
+
+
+extension String {
+    static func timestamp() -> String {
+        let dateFMT = DateFormatter()
+        dateFMT.locale = Locale(identifier: "en_US_POSIX")
+        dateFMT.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        let now = Date()
+
+        return String(format: "%@", dateFMT.string(from: now))
+    }
+
+    func tad2Date() -> Date? {
+        let dateFMT = DateFormatter()
+        dateFMT.locale = Locale(identifier: "en_US_POSIX")
+        dateFMT.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+
+        return dateFMT.date(from: self)
+    }
+}
+
+
+extension Date {
+    func Date2Tad() -> String {
+        let dateFMT = DateFormatter()
+        dateFMT.locale = Locale(identifier: "en_US_POSIX")
+        dateFMT.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+
+        return dateFMT.string(from: self)
     }
 }

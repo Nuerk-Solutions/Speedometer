@@ -71,17 +71,48 @@ struct ContentView: View {
                     }
                 }
             } else {
-                List {
-                    ForEach(items) { item in
-//                        NavigationLink {
-//                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-//                        } label: {
-//                            Text(item.timestamp!, formatter: itemFormatter)
-//                        }
-                        
-                            Text(item.timestamp!, formatter: itemFormatter)
+                
+                VStack {
+                    Group {
+                        Text("Speed: \(locationService.speed ?? -1)")
+                        Text("SpeedAccuracy: \(locationService.speedAccuracy ?? -1)")
                     }
-                    .onDelete(perform: deleteItems)
+                    Spacer()
+                    Group {
+                        Text("altitude: \(locationService.altitude ?? -1)")
+                        Text("latitude: \(locationService.latitude ?? -1)")
+                        Text("longitude: \(locationService.longitude ?? -1)")
+                        Text("course: \(locationService.course ?? -1)")
+                        Text("courseAccuracy: \(locationService.courseAccuracy ?? -1)")
+                        Text("floor: \(locationService.floor ?? -1)")
+                        Text("verticalAccuracy: \(locationService.verticalAccuracy ?? -1)")
+                        Text("horizontalAccuracy: \(locationService.horizontalAccuracy ?? -1)")
+                    }
+                    Group {
+                        Text("ellipsoidalAltitude: \(locationService.ellipsoidalAltitude ?? -1)")
+                        Spacer()
+                    }
+                    Group {
+                        
+                        Text("motionDate: \(motionService.motionDate.Date2Tad())")
+                        Text("accelerationX: \(motionService.accelerationX ?? -1)")
+                        Text("accelerationY: \(motionService.accelerationY ?? -1)")
+                        Text("accelerationZ: \(motionService.accelerationZ ?? -1)")
+                    }
+                    Spacer()
+                    Group {
+                        Text("rotationRateX: \(motionService.rotationRateX ?? -1)")
+                        Text("rotationRateY: \(motionService.rotationRateY ?? -1)")
+                        Text("rotationRateZ: \(motionService.rotationRateZ ?? -1)")
+                    }
+                    Spacer()
+                    Group {
+                        Text("magneticFieldAccuracy: \(motionService.magneticFieldAccuracy ?? -1)")
+                        Text("magneticFieldX: \(motionService.magneticFieldX ?? -1)")
+                        Text("magneticFieldY: \(motionService.magneticFieldY ?? -1)")
+                        Text("magneticFieldZ: \(motionService.magneticFieldZ ?? -1)")
+                    }
+                    Spacer()
                 }
                 .navigationBarTitle("Speedometer")
                 .toolbar {
@@ -101,6 +132,11 @@ struct ContentView: View {
             }
             Text("Select an item")
         }
+        .overlay(content: {
+            if isExporting {
+                ProgressView()
+            }
+        })
         .onAppear {
             locationService.locationManager.requestWhenInUseAuthorization()
             locationService.setViewContext(viewContext: viewContext)
@@ -122,8 +158,11 @@ struct ContentView: View {
         var csvText = "timestamp,locationTimestamp,speed,speedAccuracy,ellipsodialAltidue,altitude,latitude,longitude,verticalAccuracy,horizontalAccuracy,course,courseAccuracy,floor, ,motionTimestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,magneticFieldAccuracy,magneticFieldX,magneticFieldY,magneticFieldZ\n"
         
         for item in items {
-            let optionalDate = Date(timeIntervalSince1970: 0)
-            csvText += "\(item.timestamp ?? optionalDate),\(item.timestampLocation ?? optionalDate),\(item.speed),\(item.speedAccuracy),\(item.ellipsoidalAltitude),\(item.altitude),\(item.latitude),\(item.longitude),\(item.verticalAccuracy),\(item.horizontalAccuracy),\(item.course),\(item.courseAccuracy),\(item.floor), ,\(item.timestampMotion ?? optionalDate),\(item.accelerationX),\(item.accelerationY),\(item.accelerationZ),\(item.rotationRateX),\(item.rotationRateY),\(item.rotationRateZ),\(item.magneticFieldAccuracy),\(item.magneticFieldX),\(item.magneticFieldY),\(item.magneticFieldZ)\n"
+            let timeStampString = item.timestamp?.Date2Tad()
+            let timestampLocationString = item.timestampLocation?.Date2Tad()
+            let timestampMotionString = item.timestampMotion?.Date2Tad()
+            
+            csvText += "\(timeStampString ?? "No Date!"),\(timestampLocationString ?? "No Date!"),\(item.speed),\(item.speedAccuracy),\(item.ellipsoidalAltitude),\(item.altitude),\(item.latitude),\(item.longitude),\(item.verticalAccuracy),\(item.horizontalAccuracy),\(item.course),\(item.courseAccuracy),\(item.floor), ,\(timestampMotionString ?? "No Date!"),\(item.accelerationX),\(item.accelerationY),\(item.accelerationZ),\(item.rotationRateX),\(item.rotationRateY),\(item.rotationRateZ),\(item.magneticFieldAccuracy),\(item.magneticFieldX),\(item.magneticFieldY),\(item.magneticFieldZ)\n"
         }
         
         do {
@@ -192,5 +231,7 @@ private let itemFormatter: DateFormatter = {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(LocationService())
+            .environmentObject(MotionService())
     }
 }

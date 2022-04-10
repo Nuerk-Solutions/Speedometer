@@ -14,7 +14,7 @@ import SwiftUI
 class MotionService: ObservableObject {
     
     let manager = CMMotionManager()
-    @Published var motionDate: Date?
+    @Published var motionDate: Date = Date()
     @Published var accelerationX: Double?
     @Published var accelerationY: Double?
     @Published var accelerationZ: Double?
@@ -46,7 +46,7 @@ class MotionService: ObservableObject {
         manager.startMagnetometerUpdates()
         manager.startDeviceMotionUpdates(to: .main) { (motion, error) in
             
-            self.motionDate = Date()
+            self.motionDate = String.timestamp().tad2Date()!
             
             // Get accelerometer sensor data
             self.accelerationX = motion?.userAcceleration.x
@@ -66,8 +66,8 @@ class MotionService: ObservableObject {
             
             withAnimation {
                 let newItem = Item(context: self.viewContext!)
-                newItem.timestamp = Date()
-                newItem.timestampMotion = Date()
+                newItem.timestamp = String.timestamp().tad2Date()
+                newItem.timestampMotion = String.timestamp().tad2Date()
                 newItem.accelerationX = self.accelerationX ?? -1
                 newItem.accelerationY = self.accelerationY ?? -1
                 newItem.accelerationZ = self.accelerationZ ?? -1
