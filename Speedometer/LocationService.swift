@@ -12,61 +12,57 @@ import SwiftUI
 class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     let locationManager: CLLocationManager
-    
     @Published var authorizationStatus: CLAuthorizationStatus // For always in background question
-    @Published var lastSeenLocation: CLLocation?
-    @Published var currentPlacemark: CLPlacemark?
-    @Published var currentSpeed: String = ""
+    
+    @Published var currentSpeed: Double?
+    @Published var speedAccury: Double?
+    
+    @Published var timestamp: Date?
+    
+    @Published var altitude: Double?
+    @Published var latitude: Double?
+    @Published var longitude: Double?
+    @Published var ellipsoidalAltitude:Double?
+    
+    @Published var course: Double?
+    @Published var courseAccuracy:Double?
+    
+    @Published var floor: Int?
+    
+    @Published var verticalAccuracy:Double?
+    @Published var horizontalAccuracy:Double?
     
     override init() {
         locationManager = CLLocationManager()
         authorizationStatus = locationManager.authorizationStatus
         super.init()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        locationManager.distanceFilter = 0.1
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 0
         locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.startUpdatingLocation()
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastSeenLocation = locations.first
-        let mPerS = locationManager.location?.speed
-        let kmPerH = (mPerS ?? 0) * 3.6
-        currentSpeed = "m/s: \(mPerS ?? 0.0) | km/h:  \(kmPerH)"
-        print("m/s: \(mPerS ?? 0.0) | km/h:  \(kmPerH)")
+        currentSpeed = locationManager.location?.speed
+        speedAccury = locationManager.location?.speedAccuracy
+        timestamp = locationManager.location?.timestamp
+        altitude = locationManager.location?.altitude
+        latitude = locationManager.location?.coordinate.latitude
+        longitude = locationManager.location?.coordinate.longitude
+        course = locationManager.location?.course
+        courseAccuracy = locationManager.location?.courseAccuracy
+        floor = locationManager.location?.floor?.level
+        verticalAccuracy = locationManager.location?.verticalAccuracy
+        horizontalAccuracy = locationManager.location?.horizontalAccuracy
+        ellipsoidalAltitude = locationManager.location?.ellipsoidalAltitude
     }
     
     // TODO: Check wich method works
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         self.authorizationStatus = status
-        print(status)
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         self.authorizationStatus = manager.authorizationStatus
-        print(manager.authorizationStatus)
-    }
-    
-//    func requestLocationPermission() {
-//        self.locationManager.requestAlwaysAuthorization()
-//    }
-    
-    
-    func hasPermission() -> Bool {
-        if CLLocationManager.locationServicesEnabled() {
-            switch locationManager.authorizationStatus {
-            case .notDetermined, .restricted, .denied :
-                return false
-                
-            case .authorizedWhenInUse, .authorizedAlways:
-                return true
-                
-            default:
-                return false
-            }
-        }
-        return false
     }
 }

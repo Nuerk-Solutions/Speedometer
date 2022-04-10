@@ -12,25 +12,45 @@ import CoreMotion
 class MotionService: ObservableObject {
     
     let manager = CMMotionManager()
-    @Published var motionData: String = ""
+    @Published var accelerationX: Double?
+    @Published var accelerationY: Double?
+    @Published var accelerationZ: Double?
     
-    @Published var accelerationX: String?
-    @Published var accelerationY: String?
-    @Published var accelerationZ: String?
+    @Published var rotationRateX: Double?
+    @Published var rotationRateY: Double?
+    @Published var rotationRateZ: Double?
     
-    @Published var rotationRateX: String?
-    @Published var rotationRateY: String?
-    @Published var rotationRateZ: String?
-    
-    @Published var magneticFieldAccuracy: String?
-    @Published var magneticFieldX: String?
-    @Published var magneticFieldY: String?
-    @Published var magneticFieldZ: String?
+    @Published var magneticFieldAccuracy: Int32?
+    @Published var magneticFieldX: Double?
+    @Published var magneticFieldY: Double?
+    @Published var magneticFieldZ: Double?
     
     init() {
         manager.deviceMotionUpdateInterval = 0.1
+    }
+    
+    func startMotionUpdates() {
         manager.startDeviceMotionUpdates(to: .main) { (motion, error) in
-            self.motionData = "\(String(describing: motion?.userAcceleration))"
+            
+            // Get accelerometer sensor data
+            self.accelerationX = motion?.userAcceleration.x
+            self.accelerationY = motion?.userAcceleration.y
+            self.accelerationZ = motion?.userAcceleration.z
+
+            // Get gyroscope sensor data
+            self.rotationRateX =  motion?.rotationRate.x
+            self.rotationRateY = motion?.rotationRate.y
+            self.rotationRateZ = motion?.rotationRate.z
+
+            // Get magnetometer sensor data
+            self.magneticFieldAccuracy =  motion?.magneticField.accuracy.rawValue
+            self.magneticFieldX = motion?.magneticField.field.x
+            self.magneticFieldY = motion?.magneticField.field.y
+            self.magneticFieldZ = motion?.magneticField.field.z
         }
+    }
+    
+    func stopMotionUpdates() {
+        manager.stopDeviceMotionUpdates()
     }
 }
