@@ -14,6 +14,8 @@
 		E9AFE28A280303BE006260D9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE289280303BE006260D9 /* Persistence.swift */; };
 		E9AFE28D280303BE006260D9 /* Speedometer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE28B280303BE006260D9 /* Speedometer.xcdatamodeld */; };
 		E9AFE2942803106E006260D9 /* ContenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE2932803106E006260D9 /* ContenViewModel.swift */; };
+		E9AFE29628031101006260D9 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE29528031101006260D9 /* LocationService.swift */; };
+		E9AFE2992803153E006260D9 /* MotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE2982803153E006260D9 /* MotionService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,9 @@
 		E9AFE289280303BE006260D9 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E9AFE28C280303BE006260D9 /* Speedometer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Speedometer.xcdatamodel; sourceTree = "<group>"; };
 		E9AFE2932803106E006260D9 /* ContenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContenViewModel.swift; sourceTree = "<group>"; };
+		E9AFE29528031101006260D9 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		E9AFE2972803123E006260D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E9AFE2982803153E006260D9 /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +62,7 @@
 		E9AFE27F280303BC006260D9 /* Speedometer */ = {
 			isa = PBXGroup;
 			children = (
+				E9AFE2972803123E006260D9 /* Info.plist */,
 				E9AFE280280303BC006260D9 /* SpeedometerApp.swift */,
 				E9AFE282280303BC006260D9 /* ContentView.swift */,
 				E9AFE284280303BE006260D9 /* Assets.xcassets */,
@@ -64,6 +70,8 @@
 				E9AFE28B280303BE006260D9 /* Speedometer.xcdatamodeld */,
 				E9AFE286280303BE006260D9 /* Preview Content */,
 				E9AFE2932803106E006260D9 /* ContenViewModel.swift */,
+				E9AFE29528031101006260D9 /* LocationService.swift */,
+				E9AFE2982803153E006260D9 /* MotionService.swift */,
 			);
 			path = Speedometer;
 			sourceTree = "<group>";
@@ -150,7 +158,9 @@
 				E9AFE28A280303BE006260D9 /* Persistence.swift in Sources */,
 				E9AFE28D280303BE006260D9 /* Speedometer.xcdatamodeld in Sources */,
 				E9AFE283280303BC006260D9 /* ContentView.swift in Sources */,
+				E9AFE29628031101006260D9 /* LocationService.swift in Sources */,
 				E9AFE281280303BC006260D9 /* SpeedometerApp.swift in Sources */,
+				E9AFE2992803153E006260D9 /* MotionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +292,8 @@
 				DEVELOPMENT_TEAM = 3JWUJEGD2M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Speedometer/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for main App feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -311,6 +323,8 @@
 				DEVELOPMENT_TEAM = 3JWUJEGD2M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Speedometer/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for main App feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

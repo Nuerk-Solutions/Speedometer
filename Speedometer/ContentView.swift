@@ -13,6 +13,10 @@ struct ContentView: View {
     
     //    @FetchRequest(entity: Item.entity(), sortDescriptors: []) var transactions: FetchedResults<Item>
     
+    @ObservedObject private var locationService: LocationService = LocationService()
+    
+    @ObservedObject private var motionService: MotionService = MotionService()
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
@@ -22,16 +26,20 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
-                }
-                .onDelete(perform: deleteItems)
+            VStack {
+                Text(locationService.currentSpeed)
+                Text(motionService.motionData)
             }
+//            List {
+//                ForEach(items) { item in
+//                    NavigationLink {
+//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+//                    } label: {
+//                        Text(item.timestamp!, formatter: itemFormatter)
+//                    }
+//                }
+//                .onDelete(perform: deleteItems)
+//            }
             .navigationBarTitle("Speedometer")
             .toolbar {
                 //                ToolbarItem(placement: .navigationBarTrailing) {
@@ -50,6 +58,9 @@ struct ContentView: View {
                         
                     }
                 }
+            }
+            .onAppear {
+                locationService.locationManager.requestWhenInUseAuthorization()
             }
             Text("Select an item")
         }
