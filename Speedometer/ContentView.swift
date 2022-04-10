@@ -23,12 +23,24 @@ struct ContentView: View {
     private var items: FetchedResults<Item>
     @State private var isShareSheetShowing = false
     @State private var isRecording = false
+    @State private var isExporting = false
     
     var body: some View {
         NavigationView {
             if !isRecording {
                 VStack {
                     Button {
+                        items.forEach(viewContext.delete(_:))
+                        
+                        do {
+                            try viewContext.save()
+                        } catch {
+                            // Replace this implementation with code to handle the error appropriately.
+                            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                            let nsError = error as NSError
+                            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                        }
+                        
                         withAnimation {
                             isRecording.toggle()
                         }
@@ -40,6 +52,11 @@ struct ContentView: View {
                             .background(.regularMaterial)
                             .cornerRadius(10)
                             .shadow(radius: 20)
+                    }
+                }
+                .overlay {
+                    if isExporting {
+                        ProgressView()
                     }
                 }
                 .navigationBarTitle("Speedometer")
@@ -88,27 +105,25 @@ struct ContentView: View {
             locationService.locationManager.requestWhenInUseAuthorization()
             locationService.setViewContext(viewContext: viewContext)
             motionService.setViewContext(viewContext: viewContext)
-            
-            items.forEach(viewContext.delete(_:))
-            
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
         }
     }
     
     func shareButton() {
-        let fileName = "export.csv"
+        withAnimation {
+            isExporting.toggle()
+        }
+        
+        defer {
+            isExporting.toggle()
+        }
+        
+        let fileName = "MotionData_\(Date().ISO8601Format(.iso8601)).csv"
         let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "Date,Velocity\n"
+        var csvText = "timestamp,locationTimestamp,speed,speedAccuracy,ellipsodialAltidue,altitude,latitude,longitude,verticalAccuracy,horizontalAccuracy,course,courseAccuracy,floor, ,motionTimestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,magneticFieldAccuracy,magneticFieldX,magneticFieldY,magneticFieldZ\n"
         
         for item in items {
-            csvText += "\(item.timestamp ?? Date()),\(item.speed )\n"
+            let optionalDate = Date(timeIntervalSince1970: 0)
+            csvText += "\(item.timestamp ?? optionalDate),\(item.timestampLocation ?? optionalDate),\(item.speed),\(item.speedAccuracy),\(item.ellipsoidalAltitude),\(item.altitude),\(item.latitude),\(item.longitude),\(item.verticalAccuracy),\(item.horizontalAccuracy),\(item.course),\(item.courseAccuracy),\(item.floor), ,\(item.timestampMotion ?? optionalDate),\(item.accelerationX),\(item.accelerationY),\(item.accelerationZ),\(item.rotationRateX),\(item.rotationRateY),\(item.rotationRateZ),\(item.magneticFieldAccuracy),\(item.magneticFieldX),\(item.magneticFieldY),\(item.magneticFieldZ)\n"
         }
         
         do {

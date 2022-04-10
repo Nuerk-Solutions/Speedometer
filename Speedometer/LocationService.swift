@@ -16,7 +16,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var authorizationStatus: CLAuthorizationStatus // For always in background question
     
     @Published var speed: Double?
-    @Published var speedAccury: Double?
+    @Published var speedAccuracy: Double?
     
     @Published var timestampLocation: Date?
     
@@ -51,7 +51,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         speed = locationManager.location?.speed
-        speedAccury = locationManager.location?.speedAccuracy
+        speedAccuracy = locationManager.location?.speedAccuracy
         timestampLocation = locationManager.location?.timestamp
         altitude = locationManager.location?.altitude
         latitude = locationManager.location?.coordinate.latitude
@@ -69,7 +69,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             newItem.timestamp = Date()
             newItem.timestampLocation = locationManager.location?.timestamp
             newItem.speed = speed ?? -1
-            newItem.speedAccury = speedAccury ?? -1
+            newItem.speedAccuracy = speedAccuracy ?? -1
             newItem.altitude = altitude ?? -1
             newItem.latitude = latitude ?? -1
             newItem.longitude = longitude ?? -1
@@ -79,17 +79,6 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             newItem.verticalAccuracy = verticalAccuracy ?? -1
             newItem.horizontalAccuracy = horizontalAccuracy ?? -1
             newItem.ellipsoidalAltitude = ellipsoidalAltitude ?? -1
-            
-            //        newItem.accelerationX = 0
-            //        newItem.accelerationY = 0
-            //        newItem.accelerationZ = 0
-            //        newItem.magneticFieldX = 0
-            //        newItem.magneticFieldY = 0
-            //        newItem.magneticFieldZ = 0
-            //        newItem.magneticFieldAccuracy = 0
-            //        newItem.rotationRateX = 0
-            //        newItem.rotationRateY = 0
-            //        newItem.rotationRateZ = 0
             
             do {
                 try viewContext!.save()

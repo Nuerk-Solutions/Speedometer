@@ -32,6 +32,9 @@ class MotionService: ObservableObject {
     
     init() {
         manager.deviceMotionUpdateInterval = 0.1
+        manager.magnetometerUpdateInterval = 0.1
+        manager.gyroUpdateInterval = 0.1
+        manager.accelerometerUpdateInterval = 0.1
     }
     
     
@@ -40,6 +43,7 @@ class MotionService: ObservableObject {
     }
     
     func startMotionUpdates() {
+        manager.startMagnetometerUpdates()
         manager.startDeviceMotionUpdates(to: .main) { (motion, error) in
             
             self.motionDate = Date()
@@ -90,5 +94,6 @@ class MotionService: ObservableObject {
     
     func stopMotionUpdates() {
         manager.stopDeviceMotionUpdates()
+        manager.stopMagnetometerUpdates()
     }
 }
