@@ -33,6 +33,7 @@ struct ContentView: View {
                             isRecording.toggle()
                         }
                         locationService.locationManager.startUpdatingLocation()
+                        motionService.startMotionUpdates()
                     } label: {
                         Text("Aufzeichnung starten")
                             .padding(30)
@@ -72,6 +73,8 @@ struct ContentView: View {
                             withAnimation {
                                 isRecording.toggle()
                             }
+                            locationService.locationManager.stopUpdatingLocation()
+                            motionService.stopMotionUpdates()
                         } label: {
                             Label("Add Item", systemImage: "stop.circle")
                                 .font(.title)
@@ -84,6 +87,18 @@ struct ContentView: View {
         .onAppear {
             locationService.locationManager.requestWhenInUseAuthorization()
             locationService.setViewContext(viewContext: viewContext)
+            motionService.setViewContext(viewContext: viewContext)
+            
+            items.forEach(viewContext.delete(_:))
+            
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
         }
     }
     
