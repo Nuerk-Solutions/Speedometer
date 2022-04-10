@@ -10,12 +10,16 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
+    
+    //    @FetchRequest(entity: Item.entity(), sortDescriptors: []) var transactions: FetchedResults<Item>
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
-
+    @State private var isShareSheetShowing = false
+    
+    
     var body: some View {
         NavigationView {
             List {
@@ -28,25 +32,67 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
+            .navigationBarTitle("Speedometer")
             .toolbar {
+                //                ToolbarItem(placement: .navigationBarTrailing) {
+                //                    EditButton()
+                //                }
+                //                ToolbarItem {
+                //                    Button(action: addItem) {
+                //                        Label("Add Item", systemImage: "plus")
+                //                    }
+                //                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: shareButton)
+                    {
+                        Label("Export CSV", systemImage: "square.and.arrow.up")
+                            .font(.headline)
+                        
                     }
                 }
             }
             Text("Select an item")
         }
     }
-
+    
+    func shareButton() {
+        let fileName = "export.csv"
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
+        var csvText = "Date,Velocity\n"
+        
+        for item in items {
+            csvText += "\(item.timestamp ?? Date()),\(item.velocity ?? "-")\n"
+        }
+        
+        do {
+            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
+        } catch {
+            print("Failed to create file")
+            print("\(error)")
+        }
+        print(path ?? "not found")
+        
+        var filesToShare = [Any]()
+        filesToShare.append(path!)
+        
+        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
+        
+        UIApplication
+            .shared
+            .connectedScenes
+            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+            .first { $0.isKeyWindow }?
+            .rootViewController?
+            .present(av, animated: true)
+        
+        isShareSheetShowing.toggle()
+    }
+    
     private func addItem() {
         withAnimation {
             let newItem = Item(context: viewContext)
             newItem.timestamp = Date()
-
+            
             do {
                 try viewContext.save()
             } catch {
@@ -57,11 +103,11 @@ struct ContentView: View {
             }
         }
     }
-
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             offsets.map { items[$0] }.forEach(viewContext.delete)
-
+            
             do {
                 try viewContext.save()
             } catch {

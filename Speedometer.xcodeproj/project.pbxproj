@@ -13,6 +13,7 @@
 		E9AFE288280303BE006260D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9AFE287280303BE006260D9 /* Preview Assets.xcassets */; };
 		E9AFE28A280303BE006260D9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE289280303BE006260D9 /* Persistence.swift */; };
 		E9AFE28D280303BE006260D9 /* Speedometer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE28B280303BE006260D9 /* Speedometer.xcdatamodeld */; };
+		E9AFE2942803106E006260D9 /* ContenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE2932803106E006260D9 /* ContenViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		E9AFE287280303BE006260D9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E9AFE289280303BE006260D9 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E9AFE28C280303BE006260D9 /* Speedometer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Speedometer.xcdatamodel; sourceTree = "<group>"; };
+		E9AFE2932803106E006260D9 /* ContenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContenViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				E9AFE289280303BE006260D9 /* Persistence.swift */,
 				E9AFE28B280303BE006260D9 /* Speedometer.xcdatamodeld */,
 				E9AFE286280303BE006260D9 /* Preview Content */,
+				E9AFE2932803106E006260D9 /* ContenViewModel.swift */,
 			);
 			path = Speedometer;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9AFE2942803106E006260D9 /* ContenViewModel.swift in Sources */,
 				E9AFE28A280303BE006260D9 /* Persistence.swift in Sources */,
 				E9AFE28D280303BE006260D9 /* Speedometer.xcdatamodeld in Sources */,
 				E9AFE283280303BC006260D9 /* ContentView.swift in Sources */,
