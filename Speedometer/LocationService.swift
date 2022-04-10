@@ -14,10 +14,10 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     let locationManager: CLLocationManager
     @Published var authorizationStatus: CLAuthorizationStatus // For always in background question
     
-    @Published var currentSpeed: Double?
+    @Published var speed: Double?
     @Published var speedAccury: Double?
     
-    @Published var timestamp: Date?
+    @Published var timestampLocation: Date?
     
     @Published var altitude: Double?
     @Published var latitude: Double?
@@ -32,6 +32,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var verticalAccuracy:Double?
     @Published var horizontalAccuracy:Double?
     
+    @Environment(\.managedObjectContext) private var viewContext
+    
     override init() {
         locationManager = CLLocationManager()
         authorizationStatus = locationManager.authorizationStatus
@@ -43,9 +45,9 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentSpeed = locationManager.location?.speed
+        speed = locationManager.location?.speed
         speedAccury = locationManager.location?.speedAccuracy
-        timestamp = locationManager.location?.timestamp
+        timestampLocation = locationManager.location?.timestamp
         altitude = locationManager.location?.altitude
         latitude = locationManager.location?.coordinate.latitude
         longitude = locationManager.location?.coordinate.longitude
@@ -55,6 +57,45 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         verticalAccuracy = locationManager.location?.verticalAccuracy
         horizontalAccuracy = locationManager.location?.horizontalAccuracy
         ellipsoidalAltitude = locationManager.location?.ellipsoidalAltitude
+        
+        
+        //        withAnimation {
+        let newItem = Item(context: viewContext)
+        newItem.timestamp = Date()
+        newItem.timestampLocation = locationManager.location?.timestamp
+        newItem.speed = speed ?? -1
+        newItem.speedAccury = speedAccury ?? -1
+        newItem.altitude = altitude ?? -1
+        newItem.latitude = latitude ?? -1
+        newItem.longitude = longitude ?? -1
+        newItem.course = course ?? -1
+        newItem.courseAccuracy = courseAccuracy ?? -1
+        newItem.floor = Int32(floor ?? -1)
+        newItem.verticalAccuracy = verticalAccuracy ?? -1
+        newItem.horizontalAccuracy = horizontalAccuracy ?? -1
+        newItem.ellipsoidalAltitude = ellipsoidalAltitude ?? -1
+        
+        newItem.accelerationX = 0
+        newItem.accelerationY = 0
+        newItem.accelerationZ = 0
+        newItem.magneticFieldX = 0
+        newItem.magneticFieldY = 0
+        newItem.magneticFieldZ = 0
+        newItem.magneticFieldAccuracy = 0
+        newItem.rotationRateX = 0
+        newItem.rotationRateY = 0
+        newItem.rotationRateZ = 0
+        
+        do {
+            try viewContext.save()
+        } catch {
+            print("===========")
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.localizedDescription)")
+            //            }
+        }
     }
     
     // TODO: Check wich method works

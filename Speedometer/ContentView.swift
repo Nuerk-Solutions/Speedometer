@@ -22,47 +22,68 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
     @State private var isShareSheetShowing = false
+    @State private var isRecording = false
     
     
     var body: some View {
         NavigationView {
-            VStack {
-                Text(locationService.currentSpeed)
-                Text(motionService.motionData)
-            }
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-//                    } label: {
-//                        Text(item.timestamp!, formatter: itemFormatter)
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-            .navigationBarTitle("Speedometer")
-            .toolbar {
-                //                ToolbarItem(placement: .navigationBarTrailing) {
-                //                    EditButton()
-                //                }
-                //                ToolbarItem {
-                //                    Button(action: addItem) {
-                //                        Label("Add Item", systemImage: "plus")
-                //                    }
-                //                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: shareButton)
-                    {
-                        Label("Export CSV", systemImage: "square.and.arrow.up")
-                            .font(.headline)
+            if !isRecording {
+                VStack {
+                    Button {
+                        withAnimation {
+                            isRecording.toggle()
+                        }
+                        locationService.locationManager.startUpdatingLocation()
+                    } label: {
+                        Text("Aufzeichnung starten")
+                            .padding(30)
+                            .background(.regularMaterial)
+                            .cornerRadius(10)
+                            .shadow(radius: 20)
+                    }
+                }
+                .navigationBarTitle("Speedometer")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: shareButton)
+                        {
+                            Label("Export CSV", systemImage: "square.and.arrow.up")
+                                .font(.title)
+                            
+                        }
+                    }
+                }
+            } else {
+                List {
+                    ForEach(items) { item in
+//                        NavigationLink {
+//                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+//                        } label: {
+//                            Text(item.timestamp!, formatter: itemFormatter)
+//                        }
                         
+                            Text(item.timestamp!, formatter: itemFormatter)
+                    }
+                    .onDelete(perform: deleteItems)
+                }
+                .navigationBarTitle("Speedometer")
+                .toolbar {
+                    ToolbarItem {
+                        Button {
+                            withAnimation {
+                                isRecording.toggle()
+                            }
+                        } label: {
+                            Label("Add Item", systemImage: "stop.circle")
+                                .font(.title)
+                        }
                     }
                 }
             }
-            .onAppear {
-                locationService.locationManager.requestWhenInUseAuthorization()
-            }
             Text("Select an item")
+        }
+        .onAppear {
+            locationService.locationManager.requestWhenInUseAuthorization()
         }
     }
     
@@ -72,7 +93,7 @@ struct ContentView: View {
         var csvText = "Date,Velocity\n"
         
         for item in items {
-            csvText += "\(item.timestamp ?? Date()),\(item.velocity ?? "-")\n"
+            csvText += "\(item.timestamp ?? Date()),\(item.speed )\n"
         }
         
         do {

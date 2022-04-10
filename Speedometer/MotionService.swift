@@ -12,6 +12,7 @@ import CoreMotion
 class MotionService: ObservableObject {
     
     let manager = CMMotionManager()
+    @Published var motionDate: Date?
     @Published var accelerationX: Double?
     @Published var accelerationY: Double?
     @Published var accelerationZ: Double?
@@ -31,6 +32,8 @@ class MotionService: ObservableObject {
     
     func startMotionUpdates() {
         manager.startDeviceMotionUpdates(to: .main) { (motion, error) in
+            
+            self.motionDate = Date()
             
             // Get accelerometer sensor data
             self.accelerationX = motion?.userAcceleration.x
