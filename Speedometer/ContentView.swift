@@ -24,7 +24,6 @@ struct ContentView: View {
     @State private var isShareSheetShowing = false
     @State private var isRecording = false
     
-    
     var body: some View {
         NavigationView {
             if !isRecording {
@@ -84,6 +83,7 @@ struct ContentView: View {
         }
         .onAppear {
             locationService.locationManager.requestWhenInUseAuthorization()
+            locationService.setViewContext(viewContext: viewContext)
         }
     }
     
