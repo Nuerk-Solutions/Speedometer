@@ -28,13 +28,21 @@ class MotionService: ObservableObject {
     @Published var magneticFieldY: Double?
     @Published var magneticFieldZ: Double?
     
+    @Published var gravityX: Double?
+    @Published var gravityY: Double?
+    @Published var gravityZ: Double?
+    
+    @Published var heading: Double?
+    
+    
     var viewContext: NSManagedObjectContext?
     
     init() {
-        manager.deviceMotionUpdateInterval = 0.1
-        manager.magnetometerUpdateInterval = 0.1
-        manager.gyroUpdateInterval = 0.1
-        manager.accelerometerUpdateInterval = 0.1
+        manager.deviceMotionUpdateInterval = 0.05
+        manager.magnetometerUpdateInterval = 0.05
+        manager.gyroUpdateInterval = 0.05
+        manager.accelerometerUpdateInterval = 0.05
+        manager.showsDeviceMovementDisplay = true
     }
     
     
@@ -44,9 +52,10 @@ class MotionService: ObservableObject {
     
     func startMotionUpdates() {
         manager.startMagnetometerUpdates()
-        manager.startDeviceMotionUpdates(to: .main) { (motion, error) in
+        manager.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xArbitraryCorrectedZVertical, to: .main) { (motion, error) in
             
             self.motionDate = String.timestamp().tad2Date()!
+            self.heading = motion?.heading
             
             // Get accelerometer sensor data
             self.accelerationX = motion?.userAcceleration.x
@@ -64,6 +73,10 @@ class MotionService: ObservableObject {
             self.magneticFieldY = motion?.magneticField.field.y
             self.magneticFieldZ = motion?.magneticField.field.z
             
+            self.gravityX = motion?.gravity.x
+            self.gravityY = motion?.gravity.y
+            self.gravityZ = motion?.gravity.z
+            
             withAnimation {
                 let newItem = Item(context: self.viewContext!)
                 newItem.timestamp = String.timestamp().tad2Date()
@@ -78,13 +91,13 @@ class MotionService: ObservableObject {
                 newItem.rotationRateX = self.rotationRateX ?? -1
                 newItem.rotationRateY = self.rotationRateY ?? -1
                 newItem.rotationRateZ = self.rotationRateZ ?? -1
+                newItem.gravityX = self.gravityX ?? -1
+                newItem.gravityY = self.gravityY ?? -1
+                newItem.gravityZ = self.gravityZ ?? -1
                 
                 do {
                     try self.viewContext!.save()
                 } catch {
-                    print("===========")
-                    // Replace this implementation with code to handle the error appropriately.
-                    // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                     let nsError = error as NSError
                     fatalError("Unresolved error \(nsError), \(nsError.localizedDescription)")
                 }

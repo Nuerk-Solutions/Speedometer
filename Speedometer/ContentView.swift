@@ -11,8 +11,6 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    //    @FetchRequest(entity: Item.entity(), sortDescriptors: []) var transactions: FetchedResults<Item>
-    
     @ObservedObject private var locationService: LocationService = LocationService()
     
     @ObservedObject private var motionService: MotionService = MotionService()
@@ -27,116 +25,150 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            if !isRecording {
-                VStack {
-                    Button {
-                        items.forEach(viewContext.delete(_:))
-                        
-                        do {
-                            try viewContext.save()
-                        } catch {
-                            // Replace this implementation with code to handle the error appropriately.
-                            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                            let nsError = error as NSError
-                            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                        }
-                        
-                        withAnimation {
-                            isRecording.toggle()
-                        }
-                        locationService.locationManager.startUpdatingLocation()
-                        motionService.startMotionUpdates()
-                    } label: {
-                        Text("Aufzeichnung starten")
-                            .padding(30)
-                            .background(.regularMaterial)
-                            .cornerRadius(10)
-                            .shadow(radius: 20)
-                    }
+            Form {
+                //                Form {
+                Section {
+                    KeyValueRow(key: "Speed", value: locationService.speed?.toString())
+                    KeyValueRow(key: "Speed accuracy", value: locationService.speedAccuracy?.toString())
+                } header: {
+                    Text("Speed")
+                        .font(.headline)
+                } footer: {
+                    Text("The instantaneous speed of the device, measured in meters per second.")
                 }
-                .overlay {
-                    if isExporting {
-                        ProgressView()
-                    }
+                Section {
+                    KeyValueRow(key: "Course", value: locationService.course?.toString())
+                    KeyValueRow(key: "Course accuracy", value: locationService.courseAccuracy?.toString())
+                    KeyValueRow(key: "Floor", value: locationService.floor?.toString())
+                } header: {
+                    Text("Navigation")
+                        .font(.headline)
+                } footer: {
+                    Text("The direction in which the device is traveling, measured in degrees and relative to due north.\n The floor value represent the logical floor of the building in which the user is located.")
                 }
-                .navigationBarTitle("Speedometer")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: shareButton)
-                        {
-                            Label("Export CSV", systemImage: "square.and.arrow.up")
-                                .font(.title)
-                            
-                        }
-                    }
-                }
-            } else {
                 
-                VStack {
-                    Group {
-                        Text("Speed: \(locationService.speed ?? -1)")
-                        Text("SpeedAccuracy: \(locationService.speedAccuracy ?? -1)")
-                    }
-                    Spacer()
-                    Group {
-                        Text("altitude: \(locationService.altitude ?? -1)")
-                        Text("latitude: \(locationService.latitude ?? -1)")
-                        Text("longitude: \(locationService.longitude ?? -1)")
-                        Text("course: \(locationService.course ?? -1)")
-                        Text("courseAccuracy: \(locationService.courseAccuracy ?? -1)")
-                        Text("floor: \(locationService.floor ?? -1)")
-                        Text("verticalAccuracy: \(locationService.verticalAccuracy ?? -1)")
-                        Text("horizontalAccuracy: \(locationService.horizontalAccuracy ?? -1)")
-                    }
-                    Group {
-                        Text("ellipsoidalAltitude: \(locationService.ellipsoidalAltitude ?? -1)")
-                        Spacer()
-                    }
-                    Group {
-                        
-                        Text("motionDate: \(motionService.motionDate.Date2Tad())")
-                        Text("accelerationX: \(motionService.accelerationX ?? -1)")
-                        Text("accelerationY: \(motionService.accelerationY ?? -1)")
-                        Text("accelerationZ: \(motionService.accelerationZ ?? -1)")
-                    }
-                    Spacer()
-                    Group {
-                        Text("rotationRateX: \(motionService.rotationRateX ?? -1)")
-                        Text("rotationRateY: \(motionService.rotationRateY ?? -1)")
-                        Text("rotationRateZ: \(motionService.rotationRateZ ?? -1)")
-                    }
-                    Spacer()
-                    Group {
-                        Text("magneticFieldAccuracy: \(motionService.magneticFieldAccuracy ?? -1)")
-                        Text("magneticFieldX: \(motionService.magneticFieldX ?? -1)")
-                        Text("magneticFieldY: \(motionService.magneticFieldY ?? -1)")
-                        Text("magneticFieldZ: \(motionService.magneticFieldZ ?? -1)")
-                    }
-                    Spacer()
+                Section {
+                    KeyValueRow(key: "Heading accuracy", value: locationService.headingAccuracy?.toString())
+                    KeyValueRow(key: "X", value: locationService.headingX?.toString())
+                    KeyValueRow(key: "Y", value: locationService.headingY?.toString())
+                    KeyValueRow(key: "Z", value: locationService.headingZ?.toString())
+                    
+                    KeyValueRow(key: "Orientation", value: locationService.headingOrientation?.toString())
+                    KeyValueRow(key: "Magnetic heading", value: locationService.magneticHeading?.toString())
+                    KeyValueRow(key: "Timestamp", value: locationService.headingTimestamp?.Date2Tad())
+                    KeyValueRow(key: "True heading", value: locationService.trueHeading?.toString())
+                    KeyValueRow(key: "Motion heading", value: motionService.heading?.toString())
+                        .listRowBackground(Color.gray.opacity(0.2))
+                } header: {
+                    Text("Heading")
+                        .font(.headline)
                 }
-                .navigationBarTitle("Speedometer")
-                .toolbar {
-                    ToolbarItem {
-                        Button {
-                            withAnimation {
-                                isRecording.toggle()
+                
+                Section {
+                    KeyValueRow(key: "Altitude", value: locationService.altitude?.toString())
+                    KeyValueRow(key: "Ellipsoidal altitude", value: locationService.ellipsoidalAltitude?.toString())
+                    KeyValueRow(key: "Latitude", value: locationService.latitude?.toString())
+                    KeyValueRow(key: "Longitude", value: locationService.longitude?.toString())
+                    KeyValueRow(key: "Vertical accuracy", value: locationService.verticalAccuracy?.toString())
+                    KeyValueRow(key: "Horizontal accuracy", value: locationService.horizontalAccuracy?.toString())
+                } header: {
+                    Text("Coordinate")
+                        .font(.headline)
+                } footer: {
+                    Text("Contains the geographical location and altitude of a device, along with values indicating the accuracy of those measurements.")
+                }
+                
+                Section {
+                    KeyValueRow(key: "Timestamp", value: motionService.motionDate.Date2Tad())
+                    KeyValueRow(key: "X", value: motionService.accelerationX?.toString())
+                    KeyValueRow(key: "Y", value: motionService.accelerationY?.toString())
+                    KeyValueRow(key: "Z", value: motionService.accelerationZ?.toString())
+                } header: {
+                    Text("Acceleration")
+                        .font(.headline)
+                } footer: {
+                    Text("The total acceleration of the device is equal to gravity plus the acceleration the user imparts to the device.")
+                }
+                
+                
+                Section {
+                    KeyValueRow(key: "X", value: motionService.gravityX?.toString())
+                    KeyValueRow(key: "Y", value: motionService.gravityY?.toString())
+                    KeyValueRow(key: "Z", value: motionService.gravityZ?.toString())
+                } header: {
+                    Text("Gravity")
+                        .font(.headline)
+                } footer: {
+                    Text("The gravity acceleration vector expressed in the device's reference frame.")
+                }
+                
+                
+                Section {
+                    KeyValueRow(key: "X", value: motionService.rotationRateX?.toString())
+                    KeyValueRow(key: "Y", value: motionService.rotationRateY?.toString())
+                    KeyValueRow(key: "Z", value: motionService.rotationRateZ?.toString())
+                } header: {
+                    Text("Rotation rate")
+                        .font(.headline)
+                } footer: {
+                    Text("The rotation rate contains data specifying the device’s rate of rotation around three axes. The value of this property contains a measurement of raw gyroscope data whose bias has been removed by algorithms.")
+                }
+                Section {
+                    KeyValueRow(key: "Field accuracy", value: motionService.magneticFieldAccuracy?.toString())
+                    KeyValueRow(key: "X", value: motionService.magneticFieldX?.toString())
+                    KeyValueRow(key: "Y", value: motionService.magneticFieldY?.toString())
+                    KeyValueRow(key: "Z", value: motionService.magneticFieldZ?.toString())
+                } header: {
+                    Text("Magnetic field")
+                        .font(.headline)
+                }
+            }
+            .navigationBarTitle("Speedometer")
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        if !isRecording {
+                            items.forEach(viewContext.delete(_:))
+                            
+                            do {
+                                try viewContext.save()
+                            } catch {
+                                let nsError = error as NSError
+                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
                             }
-                            locationService.locationManager.stopUpdatingLocation()
-                            motionService.stopMotionUpdates()
-                        } label: {
-                            Label("Add Item", systemImage: "stop.circle")
-                                .font(.title)
+                            isRecording.toggle()
+                            locationService.locationManager.startUpdatingLocation()
+                            locationService.locationManager.startUpdatingHeading()
+                            locationService.locationManager.startMonitoringVisits()
+                            motionService.startMotionUpdates()
+                            return
                         }
+                        isRecording.toggle()
+                        locationService.locationManager.stopUpdatingLocation()
+                        locationService.locationManager.stopUpdatingHeading()
+                        locationService.locationManager.stopMonitoringVisits()
+                        motionService.stopMotionUpdates()
+                    } label: {
+                        Label("Start_Stop", systemImage: isRecording ? "stop.circle" : "play.circle")
+                            .font(.title)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: shareButton)
+                    {
+                        Label("Export CSV", systemImage: "square.and.arrow.up")
+                            .font(.title)
+                        
                     }
                 }
             }
-            Text("Select an item")
+            .overlay(content: {
+                if isExporting {
+                    ProgressView()
+                }
+            })
         }
-        .overlay(content: {
-            if isExporting {
-                ProgressView()
-            }
-        })
         .onAppear {
             locationService.locationManager.requestWhenInUseAuthorization()
             locationService.setViewContext(viewContext: viewContext)
@@ -155,14 +187,14 @@ struct ContentView: View {
         
         let fileName = "MotionData_\(Date().ISO8601Format(.iso8601)).csv"
         let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "timestamp,locationTimestamp,speed,speedAccuracy,ellipsodialAltidue,altitude,latitude,longitude,verticalAccuracy,horizontalAccuracy,course,courseAccuracy,floor, ,motionTimestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,magneticFieldAccuracy,magneticFieldX,magneticFieldY,magneticFieldZ\n"
+        var csvText = "timestamp,locationTimestamp,speed,speedAccuracy,ellipsodialAltidue,altitude,latitude,longitude,verticalAccuracy,horizontalAccuracy,course,courseAccuracy,floor, ,motionTimestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,magneticFieldAccuracy,magneticFieldX,magneticFieldY,magneticFieldZ,gravityX,gravityY,gravityZ\n"
         
         for item in items {
             let timeStampString = item.timestamp?.Date2Tad()
             let timestampLocationString = item.timestampLocation?.Date2Tad()
             let timestampMotionString = item.timestampMotion?.Date2Tad()
             
-            csvText += "\(timeStampString ?? "No Date!"),\(timestampLocationString ?? "No Date!"),\(item.speed),\(item.speedAccuracy),\(item.ellipsoidalAltitude),\(item.altitude),\(item.latitude),\(item.longitude),\(item.verticalAccuracy),\(item.horizontalAccuracy),\(item.course),\(item.courseAccuracy),\(item.floor), ,\(timestampMotionString ?? "No Date!"),\(item.accelerationX),\(item.accelerationY),\(item.accelerationZ),\(item.rotationRateX),\(item.rotationRateY),\(item.rotationRateZ),\(item.magneticFieldAccuracy),\(item.magneticFieldX),\(item.magneticFieldY),\(item.magneticFieldZ)\n"
+            csvText += "\(timeStampString ?? "No Date!"),\(timestampLocationString ?? "No Date!"),\(item.speed),\(item.speedAccuracy),\(item.ellipsoidalAltitude),\(item.altitude),\(item.latitude),\(item.longitude),\(item.verticalAccuracy),\(item.horizontalAccuracy),\(item.course),\(item.courseAccuracy),\(item.floor), ,\(timestampMotionString ?? "No Date!"),\(item.accelerationX),\(item.accelerationY),\(item.accelerationZ),\(item.rotationRateX),\(item.rotationRateY),\(item.rotationRateZ),\(item.magneticFieldAccuracy),\(item.magneticFieldX),\(item.magneticFieldY),\(item.magneticFieldZ),\(item.gravityX),\(item.gravityY),\(item.gravityZ)\n"
         }
         
         do {
@@ -188,37 +220,6 @@ struct ContentView: View {
         
         isShareSheetShowing.toggle()
     }
-    
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-            
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-    
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-            
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
 }
 
 private let itemFormatter: DateFormatter = {
@@ -233,5 +234,25 @@ struct ContentView_Previews: PreviewProvider {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
             .environmentObject(LocationService())
             .environmentObject(MotionService())
+    }
+}
+
+
+extension Int {
+    func toString() -> String {
+        return String(self)
+    }
+}
+
+extension Int32 {
+    func toString() -> String {
+        return String(self)
+    }
+}
+
+
+extension Double {
+    func toString() -> String {
+        return String(self)
     }
 }

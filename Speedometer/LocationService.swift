@@ -28,6 +28,15 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var course: Double?
     @Published var courseAccuracy:Double?
     
+    @Published var headingX: Double?
+    @Published var headingY: Double?
+    @Published var headingZ: Double?
+    @Published var headingOrientation: Int32?
+    @Published var headingAccuracy: Double?
+    @Published var magneticHeading: Double?
+    @Published var headingTimestamp: Date?
+    @Published var trueHeading: Double?
+    
     @Published var floor: Int?
     
     @Published var verticalAccuracy:Double?
@@ -41,6 +50,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.activityType = .automotiveNavigation
         locationManager.distanceFilter = 0
         locationManager.allowsBackgroundLocationUpdates = true
     }
@@ -62,6 +72,15 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         verticalAccuracy = locationManager.location?.verticalAccuracy
         horizontalAccuracy = locationManager.location?.horizontalAccuracy
         ellipsoidalAltitude = locationManager.location?.ellipsoidalAltitude
+        
+        headingX = locationManager.heading?.x
+        headingY = locationManager.heading?.y
+        headingZ = locationManager.heading?.z
+        headingOrientation = locationManager.headingOrientation.rawValue
+        headingAccuracy = locationManager.heading?.headingAccuracy
+        magneticHeading = locationManager.heading?.magneticHeading
+        headingTimestamp = locationManager.heading?.timestamp
+        trueHeading = locationManager.heading?.trueHeading
         
         
         withAnimation {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E91520F8280DA14B00D8EB95 /* KeyValueRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91520F7280DA14B00D8EB95 /* KeyValueRow.swift */; };
 		E9AFE281280303BC006260D9 /* SpeedometerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE280280303BC006260D9 /* SpeedometerApp.swift */; };
 		E9AFE283280303BC006260D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AFE282280303BC006260D9 /* ContentView.swift */; };
 		E9AFE285280303BE006260D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9AFE284280303BE006260D9 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E91520F7280DA14B00D8EB95 /* KeyValueRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyValueRow.swift; sourceTree = "<group>"; };
 		E9AFE27D280303BC006260D9 /* Speedometer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Speedometer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9AFE280280303BC006260D9 /* SpeedometerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedometerApp.swift; sourceTree = "<group>"; };
 		E9AFE282280303BC006260D9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				E9AFE286280303BE006260D9 /* Preview Content */,
 				E9AFE29528031101006260D9 /* LocationService.swift */,
 				E9AFE2982803153E006260D9 /* MotionService.swift */,
+				E91520F7280DA14B00D8EB95 /* KeyValueRow.swift */,
 			);
 			path = Speedometer;
 			sourceTree = "<group>";
@@ -153,6 +156,7 @@
 			files = (
 				E9AFE28A280303BE006260D9 /* Persistence.swift in Sources */,
 				E9AFE28D280303BE006260D9 /* Speedometer.xcdatamodeld in Sources */,
+				E91520F8280DA14B00D8EB95 /* KeyValueRow.swift in Sources */,
 				E9AFE283280303BC006260D9 /* ContentView.swift in Sources */,
 				E9AFE29628031101006260D9 /* LocationService.swift in Sources */,
 				E9AFE281280303BC006260D9 /* SpeedometerApp.swift in Sources */,
@@ -289,7 +293,11 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Speedometer/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = test;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = test;
+				INFOPLIST_KEY_NSLocationUsageDescription = test;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for main App feature";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Required for main App feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -321,7 +329,11 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Speedometer/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = test;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = test;
+				INFOPLIST_KEY_NSLocationUsageDescription = test;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Required for main App feature";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Required for main App feature";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
